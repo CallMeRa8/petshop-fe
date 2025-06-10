@@ -1,35 +1,7 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { bookingService } from '../services/bookingService';
 
 const ServiceContext = createContext();
-
-const serviceReducer = (state, action) => {
-  switch (action.type) {
-    case 'BOOK_SERVICE':
-      return {
-        ...state,
-        bookings: [...state.bookings, { ...action.payload, id: Date.now() }]
-      };
-    
-    case 'CANCEL_BOOKING':
-      return {
-        ...state,
-        bookings: state.bookings.filter(booking => booking.id !== action.payload)
-      };
-    
-    case 'UPDATE_BOOKING':
-      return {
-        ...state,
-        bookings: state.bookings.map(booking =>
-          booking.id === action.payload.id
-            ? { ...booking, ...action.payload.updates }
-            : booking
-        )
-      };
-    
-    default:
-      return state;
-  }
-};
 
 export const useService = () => {
   const context = useContext(ServiceContext);
@@ -40,28 +12,85 @@ export const useService = () => {
 };
 
 export const ServiceProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(serviceReducer, {
-    bookings: []
-  });
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const bookService = (serviceData) => {
-    dispatch({ type: 'BOOK_SERVICE', payload: serviceData });
+  const bookGrooming = async (bookingData) => {
+    setLoading(true);
+    try {
+      const booking = await bookingService.bookGrooming(bookingData);
+      setBookings(prev => [...prev, booking]);
+      return { success: true, booking };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const cancelBooking = (bookingId) => {
-    dispatch({ type: 'CANCEL_BOOKING', payload: bookingId });
+  const bookHotel = async (bookingData) => {
+    setLoading(true);
+    try {
+      const booking = await bookingService.bookHotel(bookingData);
+      setBookings(prev => [...prev, booking]);
+      return { success: true, booking };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateBooking = (bookingId, updates) => {
-    dispatch({ type: 'UPDATE_BOOKING', payload: { id: bookingId, updates } });
+  const bookVet = async (bookingData) => {
+    setLoading(true);
+    try {
+      const booking = await bookingService.bookVet(bookingData);
+      setBookings(prev => [...prev, booking]);
+      return { success: true, booking };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getBookingHistory = async () => {
+    setLoading(true);
+    try {
+      const history = await bookingService.getBookingHistory();
+      setBookings(history);
+      return history;
+    } catch (error) {
+      console.error('Error fetching booking history:', error);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      await bookingService.cancelBooking(bookingId);
+      setBookings(prev => prev.filter(booking => booking.id !== bookingId));
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   };
 
   const value = {
-    bookings: state.bookings,
-    bookService,
-    cancelBooking,
-    updateBooking
+    bookings,
+    loading,
+    bookGrooming,
+    bookHotel,
+    bookVet,
+    getBookingHistory,
+    cancelBooking
   };
 
-  return <ServiceContext.Provider value={value}>{children}</ServiceContext.Provider>;
+  return (
+    <ServiceContext.Provider value={value}>
+      {children}
+    </ServiceContext.Provider>
+  );
 };

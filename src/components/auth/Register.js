@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    confirmPassword: '',
     phone: '',
-    address: ''
+    password: '',
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -28,166 +28,176 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
+    
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
+      toast.error('Passwords do not match');
       return;
     }
 
-    try {
-      await register(formData);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
     }
+
+    setLoading(true);
+
+    const result = await register({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password
+    });
+    
+    if (result.success) {
+      toast.success('Registration successful!');
+      navigate('/');
+    } else {
+      toast.error(result.error || 'Registration failed');
+    }
+    
+    setLoading(false);
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="card">
-        <h2 className="text-2xl font-bold text-center mb-6">Join PawShop</h2>
-        
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Create Account</h2>
+          <p>Join our pet-loving community</p>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">
+              <User size={16} />
               Full Name
             </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="Enter your full name"
+              required
+            />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Email
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              <Mail size={16} />
+              Email Address
             </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="Enter your email"
+              required
+            />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Phone
+          <div className="form-group">
+            <label htmlFor="phone" className="form-label">
+              <Phone size={16} />
+              Phone Number
             </label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="Enter your phone number"
-                required
-              />
-            </div>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="Enter your phone number"
+              required
+            />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Address
-            </label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 text-gray-400" size={20} />
-              <textarea
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="Enter your address"
-                rows="2"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
+              <Lock size={16} />
               Password
             </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <div className="password-input-container">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
+                id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="input-field pl-10 pr-10"
-                placeholder="Enter your password"
+                className="form-input"
+                placeholder="Create a password"
                 required
               />
               <button
                 type="button"
+                className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+          <div className="form-group">
+            <label htmlFor="confirmPassword" className="form-label">
+              <Lock size={16} />
               Confirm Password
             </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <div className="password-input-container">
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="input-field pl-10"
+                className="form-input"
                 placeholder="Confirm your password"
                 required
               />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
+          </div>
+
+          <div className="form-options">
+            <label className="checkbox-label">
+              <input type="checkbox" required />
+              <span>
+                I agree to the{' '}
+                <Link to="/terms" className="link">Terms of Service</Link>
+                {' '}and{' '}
+                <Link to="/privacy" className="link">Privacy Policy</Link>
+              </span>
+            </label>
           </div>
 
           <button
             type="submit"
-            className="w-full btn-primary"
+            className="auth-button"
             disabled={loading}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <div className="text-center mt-4">
-          <span className="text-gray-600">Already have an account? </span>
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Sign in
-          </Link>
+        <div className="auth-footer">
+          <p>
+            Already have an account?{' '}
+            <Link to="/login" className="auth-link">
+              Sign in here
+            </Link>
+          </p>
         </div>
       </div>
     </div>

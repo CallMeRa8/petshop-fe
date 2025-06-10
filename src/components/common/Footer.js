@@ -1,68 +1,95 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Phone, Mail, MapPin } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-bold mb-4">🐾 PawShop</h3>
-            <p className="text-gray-300">
-              Your one-stop destination for all pet needs. From food to grooming, 
-              we care for your furry friends like our own.
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-content">
+          {/* Company Info */}
+          <div className="footer-section">
+            <h3 className="footer-title">PetShop</h3>
+            <p className="footer-description">
+              Your trusted partner for all pet care needs. We provide quality products 
+              and services to keep your furry friends happy and healthy.
             </p>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><Link to="/shop" className="text-gray-300 hover:text-white">Shop</Link></li>
-              <li><Link to="/services" className="text-gray-300 hover:text-white">Services</Link></li>
-              <li><Link to="/services/grooming" className="text-gray-300 hover:text-white">Grooming</Link></li>
-              <li><Link to="/services/hotel" className="text-gray-300 hover:text-white">Pet Hotel</Link></li>
-              <li><Link to="/services/vet" className="text-gray-300 hover:text-white">Veterinary</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Customer Service</h4>
-            <ul className="space-y-2">
-              <li><Link to="/order-status" className="text-gray-300 hover:text-white">Order Status</Link></li>
-              <li><Link to="/history/shopping" className="text-gray-300 hover:text-white">Order History</Link></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">Help Center</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">Contact Us</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Phone size={16} className="mr-2" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center">
-                <Mail size={16} className="mr-2" />
-                <span className="text-gray-300">info@pawshop.com</span>
-              </div>
-              <div className="flex items-center">
-                <MapPin size={16} className="mr-2" />
-                <span className="text-gray-300">123 Pet Street, City, State</span>
-              </div>
+            <div className="social-links">
+              <a href="#" className="social-link"><Facebook size={20} /></a>
+              <a href="#" className="social-link"><Instagram size={20} /></a>
+              <a href="#" className="social-link"><Twitter size={20} /></a>
             </div>
-            
-            <div className="flex space-x-4 mt-4">
-              <Facebook size={20} className="text-gray-300 hover:text-white cursor-pointer" />
-              <Twitter size={20} className="text-gray-300 hover:text-white cursor-pointer" />
-              <Instagram size={20} className="text-gray-300 hover:text-white cursor-pointer" />
+          </div>
+
+          {/* Quick Links */}
+          <div className="footer-section">
+            <h4 className="footer-subtitle">Quick Links</h4>
+            <ul className="footer-links">
+              <li><Link to="/" className="footer-link">Home</Link></li>
+              <li><Link to="/shop" className="footer-link">Shop</Link></li>
+              <li><Link to="/services" className="footer-link">Services</Link></li>
+              <li><Link to="/about" className="footer-link">About Us</Link></li>
+              <li><Link to="/contact" className="footer-link">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div className="footer-section">
+            <h4 className="footer-subtitle">Our Services</h4>
+            <ul className="footer-links">
+              <li><Link to="/grooming" className="footer-link">Pet Grooming</Link></li>
+              <li><Link to="/hotel" className="footer-link">Pet Hotel</Link></li>
+              <li><Link to="/vet" className="footer-link">Veterinary Care</Link></li>
+              <li><Link to="/training" className="footer-link">Pet Training</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div className="footer-section">
+            <h4 className="footer-subtitle">Contact Us</h4>
+            <div className="contact-info">
+              <div className="contact-item">
+                <MapPin size={16} />
+                <span>123 Pet Street, Animal City, AC 12345</span>
+              </div>
+              <div className="contact-item">
+                <Phone size={16} />
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div className="contact-item">
+                <Mail size={16} />
+                <span>info@petshop.com</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-4 text-center">
-          <p className="text-gray-300">&copy; 2024 PawShop. All rights reserved.</p>
+        {/* Newsletter */}
+        <div className="newsletter-section">
+          <h4 className="newsletter-title">Subscribe to our Newsletter</h4>
+          <p className="newsletter-description">
+            Get updates on new products, services, and special offers!
+          </p>
+          <div className="newsletter-form">
+            <input 
+              type="email" 
+              placeholder="Enter your email address" 
+              className="newsletter-input"
+            />
+            <button className="newsletter-button">Subscribe</button>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="footer-bottom">
+          <div className="footer-bottom-content">
+            <p>&copy; 2024 PetShop. All rights reserved.</p>
+            <div className="footer-bottom-links">
+              <Link to="/privacy" className="footer-bottom-link">Privacy Policy</Link>
+              <Link to="/terms" className="footer-bottom-link">Terms of Service</Link>
+              <Link to="/cookies" className="footer-bottom-link">Cookie Policy</Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

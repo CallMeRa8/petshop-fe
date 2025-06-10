@@ -1,28 +1,37 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Context Providers
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ServiceProvider } from './context/ServiceContext';
-import Header from './components/common/Header';
+
+// Components
+import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+// Pages
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Services from './pages/Services';
-import Dashboard from './pages/Dashboard';
+import Grooming from './pages/Grooming';
+import Hotel from './pages/Hotel';
+import Vet from './pages/Vet';
+import Cart from './pages/Cart';
+import Payment from './pages/Payment';
+import OrderStatus from './pages/OrderStatus';
+import Profile from './pages/Profile';
+import History from './pages/History';
+
+// Auth Components
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import ChangePassword from './components/auth/ChangePassword';
-import Profile from './components/profile/Profile';
-import EditProfile from './components/profile/EditProfile';
-import Cart from './components/shop/Cart';
-import Checkout from './components/shop/Checkout';
-import Grooming from './components/services/Grooming';
-import Hotel from './components/services/Hotel';
-import Vet from './components/services/Vet';
-import ShoppingHistory from './components/history/ShoppingHistory';
-import ServiceHistory from './components/history/ServiceHistory';
-import OrderStatus from './components/history/OrderStatus';
-import Payment from './components/payment/Payment';
+
+// Styles
+import './App.css';
 
 function App() {
   return (
@@ -30,31 +39,54 @@ function App() {
       <CartProvider>
         <ServiceProvider>
           <Router>
-            <div className="min-h-screen bg-gray-50">
-              <Header />
-              <main className="container mx-auto px-4 py-8">
+            <div className="App">
+              <Navbar />
+              
+              <main className="main-content">
                 <Routes>
+                  {/* Public Routes */}
                   <Route path="/" element={<Home />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/services" element={<Services />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/change-password" element={<ChangePassword />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/edit-profile" element={<EditProfile />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/services/grooming" element={<Grooming />} />
-                  <Route path="/services/hotel" element={<Hotel />} />
-                  <Route path="/services/vet" element={<Vet />} />
-                  <Route path="/history/shopping" element={<ShoppingHistory />} />
-                  <Route path="/history/services" element={<ServiceHistory />} />
-                  <Route path="/order-status" element={<OrderStatus />} />
-                  <Route path="/payment" element={<Payment />} />
+                  
+                  {/* Service Routes */}
+                  <Route path="/grooming" element={<Grooming />} />
+                  <Route path="/hotel" element={<Hotel />} />
+                  <Route path="/vet" element={<Vet />} />
+                  
+                  {/* Protected Routes */}
+                  <Route path="/cart" element={
+                    <ProtectedRoute>
+                      <Cart />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/payment" element={
+                    <ProtectedRoute>
+                      <Payment />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/order-status" element={
+                    <ProtectedRoute>
+                      <OrderStatus />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/history" element={
+                    <ProtectedRoute>
+                      <History />
+                    </ProtectedRoute>
+                  } />
                 </Routes>
               </main>
+              
               <Footer />
+              <ToastContainer position="top-right" autoClose={5000} />
             </div>
           </Router>
         </ServiceProvider>
